@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     height: 48,
     width: '80%',
+    marginBottom: 25,
   },
   row: {
     width: '80%',

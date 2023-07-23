@@ -23,7 +23,7 @@ export default InputModule;
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 25,
+    paddingTop: 25,
     gap: 10,
     width: '90%',
     borderRadius: 25,
