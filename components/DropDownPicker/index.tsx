@@ -41,6 +41,7 @@ const DropDownPicker = (props: Props) => {
           <Text style={{fontWeight: 'bold', fontSize: 16}}>לחץ לבחירה</Text>
         )}
       </View>
+      {disabled && <Text style={{fontWeight: 'bold'}}>{title}</Text>}
     </Pressable>
   );
 };
