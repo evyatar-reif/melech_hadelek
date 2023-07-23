@@ -19,7 +19,9 @@ const Open = (props: Props) => {
   return (
     <View style={styles.container}>
       <Text style={{fontWeight: 'bold', fontSize: 16}}>{title}</Text>
-      <ScrollView style={{height: 250}}>{elms}</ScrollView>
+      <ScrollView nestedScrollEnabled={true} style={{height: 250}}>
+        {elms}
+      </ScrollView>
     </View>
   );
 };

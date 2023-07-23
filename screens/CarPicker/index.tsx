@@ -4,7 +4,6 @@ import FullScreenWrapper from '../../components/FullScreenWrapper';
 import {car, carInfo} from '../../types';
 import Picker from './Picker';
 import Details from './Details';
-import {useNavigation} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 import {setUserCar} from '../../redux/settingsReducer';
 
@@ -15,26 +14,26 @@ const defaultCar: carInfo = {
   year: '',
 };
 
-type Props = {};
+type Props = {
+  setIsPicker: () => void;
+};
 
 const CarPicker = (props: Props) => {
+  const {setIsPicker} = props;
   const [entry, setEntry] = useState<carInfo>(defaultCar);
-  const navigation = useNavigation();
   const dispatch = useDispatch();
   async function onSubmit(car: car) {
     // console.log(car);
     dispatch(setUserCar(car));
-    navigation.navigate('Home');
+    setIsPicker();
   }
 
   return (
-    <View style={styles.container}>
-      <FullScreenWrapper>
-        <Text style={{fontSize: 24, marginBottom: 20}}>בחר רכב</Text>
-        <Picker entry={entry} setEntry={setEntry} />
-        <Details entry={entry} onSubmit={onSubmit} />
-      </FullScreenWrapper>
-    </View>
+    <FullScreenWrapper>
+      <Text style={{fontSize: 24, marginBottom: 20}}>בחר רכב</Text>
+      <Picker entry={entry} setEntry={setEntry} />
+      <Details entry={entry} onSubmit={onSubmit} />
+    </FullScreenWrapper>
   );
 };
 

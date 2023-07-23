@@ -1,5 +1,6 @@
 import {StyleSheet, Text, Pressable} from 'react-native';
 import React, {Dispatch, SetStateAction} from 'react';
+import {useSelector} from 'react-redux';
 
 type Props = {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -7,10 +8,12 @@ type Props = {
 
 const Closed = (props: Props) => {
   const {setIsOpen} = props;
+  const {settingsState} = useSelector(state => state);
 
   return (
     <Pressable onPress={() => setIsOpen(true)} style={styles.container}>
-      <Text>2011 Ford Focus</Text>
+      <Text
+        style={{}}>{`${settingsState.car.info.year} ${settingsState.car.info.make} ${settingsState.car.info.model}`}</Text>
     </Pressable>
   );
 };
@@ -23,7 +26,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderBottomLeftRadius: 25,
     borderBottomRightRadius: 25,
-    backgroundColor: 'pink',
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
   },

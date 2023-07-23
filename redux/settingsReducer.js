@@ -33,10 +33,12 @@ const defaultState = {
   maam: true,
   service: false,
   car: {
-    id: 31862,
-    year: 2012,
-    make: 'Chevrolet',
-    model: 'Silverado 15 Hybrid 4WD',
+    info: {
+      id: 31862,
+      year: 2012,
+      make: 'Chevrolet',
+      model: 'Silverado 15 Hybrid 4WD',
+    },
     economy: {city: 8.5, highway: 9.78},
   },
   address: {
