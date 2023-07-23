@@ -13,8 +13,8 @@ export default FullScreenWrapper;
 
 const styles = StyleSheet.create({
   container: {
-    height: '75%',
     width: '90%',
+    paddingVertical: 15,
     borderBottomRightRadius: 25,
     borderBottomLeftRadius: 25,
     backgroundColor: '#fff',

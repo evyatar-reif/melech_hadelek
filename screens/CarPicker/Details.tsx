@@ -24,6 +24,7 @@ const Details = (props: Props) => {
     init();
 
     async function init() {
+      if (!entry.model) return;
       const c = await getCarInfo(entry.year, entry.make, entry.model);
       console.log(c);
       setCar(c);
@@ -37,7 +38,7 @@ const Details = (props: Props) => {
           style={{
             alignItems: 'flex-end',
             borderBottomWidth: 0.5,
-            gap: 10,
+
             padding: 10,
           }}>
           <Text style={{fontWeight: 'bold'}}>מזהה</Text>
@@ -47,7 +48,6 @@ const Details = (props: Props) => {
           style={{
             alignItems: 'flex-end',
             borderBottomWidth: 0.5,
-            gap: 10,
             padding: 10,
           }}>
           <Text style={{fontWeight: 'bold'}}>ק"מ לליטר בכביש מהיר</Text>
@@ -82,7 +82,7 @@ export default Details;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
+    marginTop: 10,
     borderRadius: 16,
     borderWidth: 0.5,
     width: 275,

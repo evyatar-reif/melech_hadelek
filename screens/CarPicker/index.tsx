@@ -32,7 +32,7 @@ const CarPicker = (props: Props) => {
       <FullScreenWrapper>
         <Text style={{fontSize: 24, marginBottom: 20}}>בחר רכב</Text>
         <Picker entry={entry} setEntry={setEntry} />
-        {entry.model && <Details entry={entry} onSubmit={onSubmit} />}
+        <Details entry={entry} onSubmit={onSubmit} />
       </FullScreenWrapper>
     </View>
   );
