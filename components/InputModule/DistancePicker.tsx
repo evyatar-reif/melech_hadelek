@@ -13,8 +13,8 @@ const DistancePicker = (props: Props) => {
     <View style={{width: '100%', alignItems: 'center', gap: 10}}>
       <Counter unit={'ק"מ'} minValue={1} count={count} setCount={setCount} />
       <View style={styles.row}>
-        <CheckBox value={city} onValueChange={v => setCity(v)} size={46} />
-        <Text style={{fontSize: 24}}>נסיעה עירונית?</Text>
+        <CheckBox value={city} onValueChange={v => setCity(v)} size={36} />
+        <Text style={{fontSize: 20}}>נסיעה עירונית?</Text>
       </View>
       <Pressable style={styles.btn}>
         <Text style={{fontWeight: 'bold', color: 'white', fontSize: 24}}>
