@@ -11,13 +11,13 @@ import {getAutocomplete} from '../../utils/calc';
 
 type Props = {
   value: string;
+  onPress: () => void;
   onValueChange: (v: string) => void;
   placeHolder: string;
 };
 
 const AddressInput = (props: Props) => {
-  const {value, onValueChange, placeHolder} = props;
-  const [entry, setEntry] = useState<string>(value);
+  const {value, onValueChange, placeHolder, onPress} = props;
   const [showAutocomplete, setShowAutocomplete] = useState(false);
   const [autocomplete, setAutocomplete] = useState([]);
 
@@ -26,21 +26,20 @@ const AddressInput = (props: Props) => {
   if (autocomplete[0]) {
     elms = autocomplete.map((a, i) => (
       <Pressable
+        key={`auto${i}`}
         onPress={() => {
           onValueChange(a.description);
-          setEntry(a.description);
+          onPress();
           setShowAutocomplete(false);
         }}>
-        <Text style={styles.row} key={`auto${i}`}>
-          {a.description}
-        </Text>
+        <Text style={styles.row}>{a.description}</Text>
       </Pressable>
     ));
   }
 
   async function auto(v: string) {
-    setEntry(v);
-    if (entry.length <= 3) {
+    onValueChange(v);
+    if (v.length <= 3) {
       setShowAutocomplete(false);
       return;
     }
@@ -53,7 +52,7 @@ const AddressInput = (props: Props) => {
       <TextInput
         style={styles.input}
         placeholder={placeHolder}
-        value={entry}
+        value={value}
         onChangeText={(v: string) => auto(v)}
       />
       {showAutocomplete && (
