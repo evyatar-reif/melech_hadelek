@@ -233,7 +233,6 @@ const MapPicker = (props: Props) => {
             draggable
             image={OriginPin}
             title="מוצא"
-            pinColor="#0000ff"
             coordinate={{
               latitude: geo.origin.latitude,
               longitude: geo.origin.longitude,
@@ -246,7 +245,6 @@ const MapPicker = (props: Props) => {
             draggable
             image={DestinationPin}
             title="יעד"
-            pinColor="#0000ff"
             coordinate={{
               latitude: geo.destination.latitude,
               longitude: geo.destination.longitude,
@@ -277,7 +275,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderBottomLeftRadius: 25,
     borderBottomRightRadius: 25,
-    height: 350,
+    height: 300,
   },
   input: {
     width: '100%',
