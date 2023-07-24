@@ -2,15 +2,19 @@
 import {
   Pressable,
   StyleSheet,
-  TextInput,
+  ToastAndroid,
   View,
   PermissionsAndroid,
   Text,
 } from 'react-native';
 import React, {useEffect, useState, useRef} from 'react';
 import Swap from '../../assets/Swap';
-import MapView from 'react-native-maps';
+import MapView, {Marker} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
+import AddressInput from './AddressInput';
+import {getGeolocation} from '../../utils/calc';
+import OriginPin from '../../assets/OriginPin.png';
+import DestinationPin from '../../assets/DestinationPin.png';
 
 type Props = {};
 
@@ -44,13 +48,17 @@ const MapPicker = (props: Props) => {
     latitudeDelta: 0.1,
     longitudeDelta: 0.1,
   });
+  const [geo, setGeo] = useState({
+    origin: null,
+    destination: null,
+  });
   const mapRef = useRef(null);
 
   function switchAddress() {
     const temp = {origin: entry.destination, destination: entry.origin};
     setEntry(temp);
   }
-
+  console.log('reload');
   useEffect(() => {
     init();
 
@@ -74,6 +82,54 @@ const MapPicker = (props: Props) => {
       );
     }
   }, []);
+
+  useEffect(() => {
+    updateOriginMarker();
+    async function updateOriginMarker() {
+      try {
+        const newGeo = await getGeolocation(entry.origin);
+        console.log(newGeo);
+        setGeo(prev => {
+          return {...prev, origin: newGeo};
+        });
+        changeFocus(newGeo.latitude, newGeo.longitude);
+      } catch (err) {
+        ToastAndroid.showWithGravity(
+          'לא נמצאה כתובת',
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        );
+      }
+    }
+  }, [entry.origin]);
+
+  useEffect(() => {
+    updateDestinationMarker();
+    async function updateDestinationMarker() {
+      try {
+        const newGeo = await getGeolocation(entry.destination);
+        setGeo(prev => {
+          return {...prev, destination: newGeo};
+        });
+        changeFocus(newGeo.latitude, newGeo.longitude);
+      } catch (err) {
+        ToastAndroid.showWithGravity(
+          'לא נמצאה כתובת',
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        );
+      }
+    }
+  }, [entry.destination]);
+
+  async function changeFocus(latitude: string, longitude: string) {
+    mapRef.current.animateToRegion({
+      latitude,
+      longitude,
+      latitudeDelta: 0.1,
+      longitudeDelta: 0.1,
+    });
+  }
 
   return (
     <View
@@ -100,21 +156,19 @@ const MapPicker = (props: Props) => {
           <Swap />
         </Pressable>
         <View style={{width: '80%', gap: 10}}>
-          <TextInput
-            style={styles.input}
-            placeholder="בחר נקודת התחלה"
+          <AddressInput
+            placeHolder="כתובת מוצא"
             value={entry.origin}
-            onChangeText={v =>
+            onValueChange={v =>
               setEntry(prev => {
                 return {...prev, origin: v};
               })
             }
           />
-          <TextInput
-            style={styles.input}
-            placeholder="בחר יעד"
+          <AddressInput
+            placeHolder="כתובת יעד"
             value={entry.destination}
-            onChangeText={v =>
+            onValueChange={v =>
               setEntry(prev => {
                 return {...prev, destination: v};
               })
@@ -133,8 +187,30 @@ const MapPicker = (props: Props) => {
         ref={mapRef}
         style={styles.map}
         showsUserLocation={true}
-        region={userLocation}
-      />
+        region={userLocation}>
+        {geo.origin && (
+          <Marker
+            image={OriginPin}
+            title="מוצא"
+            pinColor="#0000ff"
+            coordinate={{
+              latitude: geo.origin.latitude,
+              longitude: geo.origin.longitude,
+            }}
+          />
+        )}
+        {geo.destination && (
+          <Marker
+            image={DestinationPin}
+            title="יעד"
+            pinColor="#0000ff"
+            coordinate={{
+              latitude: geo.destination.latitude,
+              longitude: geo.destination.longitude,
+            }}
+          />
+        )}
+      </MapView>
     </View>
   );
 };

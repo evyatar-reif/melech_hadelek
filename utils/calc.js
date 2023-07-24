@@ -4,6 +4,22 @@ const apiKey = secret.google_api_key;
 
 const citySpeedLimit = 50;
 
+export async function getAutocomplete(address) {
+  try {
+    const a = address.split(' ').join('%20');
+    const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${a}&key=${apiKey}`;
+    // console.log(url);
+    const auto = await axios(url, {
+      method: 'get',
+    });
+
+    return auto.data.predictions;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}
+
 export async function calcDrive(origin, destination) {
   try {
     const o = await getAddress(origin.split(' ').join('%20'));
