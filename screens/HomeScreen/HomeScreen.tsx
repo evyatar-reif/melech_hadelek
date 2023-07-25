@@ -12,6 +12,11 @@ import {
 } from 'react-native-google-mobile-ads';
 import {drive} from '../../types';
 
+const adIds = {
+  BANNER: 'ca-app-pub-2066782014891536/9310909734',
+  INTERSTITIAL: 'ca-app-pub-2066782014891536/6466088694',
+};
+
 type Props = {};
 
 const HomeScreen = (props: props) => {
@@ -19,13 +24,12 @@ const HomeScreen = (props: props) => {
   const [drive, setDrive] = useState<drive>({distance: 0, type: 'city'});
   const [openSettings, setOpenSettings] = useState(false);
   const {isLoaded, isClosed, load, show} = useInterstitialAd(
-    TestIds.INTERSTITIAL,
+    adIds.INTERSTITIAL,
     {
       requestNonPersonalizedAdsOnly: true,
+      keywords: ['fuel', 'car'],
     },
   );
-
-  // console.log(drive);
 
   useEffect(() => {
     load();
@@ -59,10 +63,11 @@ const HomeScreen = (props: props) => {
         }}
         onPress={() => setOpenSettings(false)}>
         <GAMBannerAd
-          unitId={TestIds.BANNER}
+          unitId={adIds.BANNER}
           sizes={[BannerAdSize.LARGE_BANNER]}
           requestOptions={{
             requestNonPersonalizedAdsOnly: true,
+            keywords: ['fuel', 'car'],
           }}
         />
       </Pressable>
