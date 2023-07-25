@@ -12,13 +12,20 @@ import Swap from '../../assets/Swap';
 import MapView, {Marker} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import AddressInput from './AddressInput';
-import {getGeolocation, getAddressFromGeometry} from '../../utils/calc';
+import {
+  getGeolocation,
+  getAddressFromGeometry,
+  parseDrive,
+} from '../../utils/calc';
 import OriginPin from '../../assets/OriginPin.png';
 import DestinationPin from '../../assets/DestinationPin.png';
 import MapViewDirections from 'react-native-maps-directions';
 import secret from '../../secret.json';
+import {drive} from '../../types';
 
-type Props = {};
+type Props = {
+  onSubmit: (d: drive) => void;
+};
 
 const requestLocationPermission = async () => {
   try {
@@ -43,6 +50,7 @@ const requestLocationPermission = async () => {
 };
 
 const MapPicker = (props: Props) => {
+  const {onSubmit} = props;
   const [entry, setEntry] = useState({origin: '', destination: ''});
   const [userLocation, setUserLocation] = useState({
     latitude: 32,
@@ -54,15 +62,16 @@ const MapPicker = (props: Props) => {
     origin: null,
     destination: null,
   });
+  const [drive, setDrive] = useState<drive>({distance: 10, type: 'city'});
   const mapRef = useRef(null);
 
   function switchAddress() {
     const temp = {origin: entry.destination, destination: entry.origin};
     setEntry(temp);
-    updateDestinationMarker();
-    updateOriginMarker();
+    updateDestinationMarker(entry.origin);
+    updateOriginMarker(entry.destination);
   }
-  console.log('reload');
+
   useEffect(() => {
     init();
 
@@ -87,11 +96,10 @@ const MapPicker = (props: Props) => {
     }
   }, []);
 
-  async function updateOriginMarker() {
+  async function updateOriginMarker(newValue: string) {
     try {
-      if (entry.origin.length <= 3) return;
-      const newGeo = await getGeolocation(entry.origin);
-      console.log(newGeo);
+      if (newValue.length <= 3) return;
+      const newGeo = await getGeolocation(newValue);
       setGeo(prev => {
         return {...prev, origin: newGeo};
       });
@@ -105,11 +113,10 @@ const MapPicker = (props: Props) => {
     }
   }
 
-  async function updateDestinationMarker() {
+  async function updateDestinationMarker(newValue: string) {
     try {
-      if (entry.destination.length <= 3) return;
-
-      const newGeo = await getGeolocation(entry.destination);
+      if (newValue.length <= 3) return;
+      const newGeo = await getGeolocation(newValue);
       setGeo(prev => {
         return {...prev, destination: newGeo};
       });
@@ -121,6 +128,11 @@ const MapPicker = (props: Props) => {
         ToastAndroid.CENTER,
       );
     }
+  }
+
+  async function parseEntry() {
+    if (!entry.origin || !entry.destination) return;
+    onSubmit(drive);
   }
 
   async function changeFocus(latitude: string, longitude: string) {
@@ -140,7 +152,6 @@ const MapPicker = (props: Props) => {
         coordinate.latitude,
         coordinate.longitude,
       );
-      console.log(newAddress);
       setEntry(prev => {
         return {...prev, destination: newAddress};
       });
@@ -202,7 +213,7 @@ const MapPicker = (props: Props) => {
                 return {...prev, origin: v};
               });
             }}
-            onPress={updateOriginMarker}
+            onPress={v => updateOriginMarker(v)}
           />
           <AddressInput
             placeHolder="כתובת יעד"
@@ -212,14 +223,14 @@ const MapPicker = (props: Props) => {
                 return {...prev, destination: v};
               });
             }}
-            onPress={updateDestinationMarker}
+            onPress={v => updateDestinationMarker(v)}
           />
         </View>
       </View>
 
-      <Pressable style={styles.btn}>
+      <Pressable style={styles.btn} onPress={parseEntry}>
         <Text style={{fontWeight: 'bold', color: 'white', fontSize: 24}}>
-          אישור
+          חשב עלות
         </Text>
       </Pressable>
 
@@ -256,6 +267,11 @@ const MapPicker = (props: Props) => {
         )}
         {geo.origin && geo.destination && (
           <MapViewDirections
+            tappable
+            onReady={i => {
+              const d: drive = parseDrive(i.distance, i.duration);
+              setDrive(d);
+            }}
             strokeWidth={5}
             origin={geo.origin}
             destination={geo.destination}

@@ -1,12 +1,17 @@
 import {StyleSheet, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import DistancePicker from './DistancePicker';
 import MapPicker from './MapPicker';
 import Picker from './Picker';
+import {drive} from '../../types';
 
-const InputModule = () => {
+type props = {
+  onSubmit: (d: drive) => void;
+};
+
+const InputModule = (props: props) => {
+  const {onSubmit} = props;
   const [step, setStep] = useState(0); // 0 is address, 1 is distance
-
   return (
     <View style={styles.container}>
       <Picker
@@ -14,7 +19,11 @@ const InputModule = () => {
         setAddress={() => setStep(0)}
         setDistance={() => setStep(1)}
       />
-      {step == 0 ? <MapPicker /> : <DistancePicker />}
+      {step == 0 ? (
+        <MapPicker onSubmit={onSubmit} />
+      ) : (
+        <DistancePicker onSubmit={onSubmit} />
+      )}
     </View>
   );
 };

@@ -14,3 +14,15 @@ export type car = {
   info: carInfo;
   economy: carEconomy;
 };
+
+export type drive = {
+  distance: number;
+  type: 'city' | 'highway';
+};
+
+export type cost = {
+  noMaamNoService: number;
+  noMaamYesService: number;
+  yesMaamNoService: number;
+  yesMaamYesService: number;
+};

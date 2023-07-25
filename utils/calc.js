@@ -55,6 +55,17 @@ export async function calcDrive(origin, destination) {
   }
 }
 
+export function parseDrive(distanceInKm, duration) {
+  const durationInHours = (duration / 60).toFixed(2);
+  const speedInKmh = Math.round(distanceInKm / durationInHours);
+  const drive = {
+    distance: distanceInKm,
+    // speedInKmh: speedInKmh,
+    type: speedInKmh > citySpeedLimit ? 'highway' : 'city',
+  };
+  return drive;
+}
+
 export async function getPrice() {
   try {
     const url = 'https://fuelcalc.energydmz.org/api/prices/getLatestPrice';
@@ -62,10 +73,10 @@ export async function getPrice() {
       method: 'get',
     });
     const result = {
-      noMaamNoService: price.data[0],
-      noMaamYesService: price.data[1],
-      yesMaamNoService: price.data[2],
-      yesMaamYesService: price.data[3],
+      noMaamNoService: price.data[0].PriceValue,
+      noMaamYesService: price.data[1].PriceValue,
+      yesMaamNoService: price.data[2].PriceValue,
+      yesMaamYesService: price.data[3].PriceValue,
     };
     return result;
   } catch (error) {
@@ -86,10 +97,10 @@ export async function calcCost(distance, economy, type) {
     type == 'city' ? distance / economy.city : distance / economy.highway;
 
   const totalCost = {
-    noMaamNoService: litersUsed * price['noMaamNoService'].PriceValue,
-    noMaamYesService: litersUsed * price['noMaamYesService'].PriceValue,
-    yesMaamNoService: litersUsed * price['yesMaamNoService'].PriceValue,
-    yesMaamYesService: litersUsed * price['yesMaamYesService'].PriceValue,
+    noMaamNoService: litersUsed * price['noMaamNoService'],
+    noMaamYesService: litersUsed * price['noMaamYesService'],
+    yesMaamNoService: litersUsed * price['yesMaamNoService'],
+    yesMaamYesService: litersUsed * price['yesMaamYesService'],
   };
 
   return totalCost;

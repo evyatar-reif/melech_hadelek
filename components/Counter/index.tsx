@@ -32,7 +32,7 @@ const Counter = (props: Props) => {
           keyboardType="numeric"
           value={`${count}`}
           onChangeText={v => {
-            if (v != '') setCount(Number.parseInt(v.split(' ')[0]));
+            if (v != '') setCount(Number.parseFloat(v.split(' ')[0]));
             else setCount(0);
           }}
         />

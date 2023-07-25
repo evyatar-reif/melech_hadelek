@@ -1,4 +1,7 @@
 {
   "name": "melech_hadelek",
-  "displayName": "melech_hadelek"
+  "displayName": "melech_hadelek",
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-2066782014891536~5349545626"
+  }
 }

@@ -1,16 +1,46 @@
 /* eslint-disable react-native/no-inline-styles */
 import {StyleSheet, Text, View, Pressable} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Counter from '../Counter';
 import CheckBox from '../CheckBox';
 import GasPriceTable from './GasPriceTable';
+import {drive, cost} from '../../types';
+import {calcCost} from '../../utils/calc';
+import {useSelector} from 'react-redux';
 
-type Props = {};
+type Props = {
+  drive: drive;
+};
 
 const ResultModule = (props: Props) => {
+  const {drive} = props;
+  const {settingsState} = useSelector(state => state);
   const [divider, setDivider] = useState(1);
   const [maam, setMaam] = useState(true);
-  const [service, setService] = useState(true);
+  const [selfService, setSelfService] = useState(true);
+  const [cost, setCost] = useState<cost | null>(null);
+
+  function getDisplayCost() {
+    if (!cost) return 0;
+    if (maam && !selfService) return cost.yesMaamYesService.toFixed(2);
+    if (maam && selfService) return cost.yesMaamNoService.toFixed(2);
+    if (!maam && !selfService) return cost.noMaamYesService.toFixed(2);
+    if (!maam && selfService) return cost.noMaamNoService.toFixed(2);
+  }
+
+  useEffect(() => {
+    console.log(drive);
+    init();
+    async function init() {
+      const c = await calcCost(
+        drive.distance,
+        settingsState.car.economy,
+        drive.type,
+      );
+      console.log(c);
+      setCost(c);
+    }
+  }, [drive, settingsState.car]);
 
   return (
     <View style={styles.container}>
@@ -46,16 +76,15 @@ const ResultModule = (props: Props) => {
           justifyContent: 'space-between',
           gap: 10,
         }}>
-        <CheckBox value={service} onValueChange={setService} size={36} />
+        <CheckBox
+          value={selfService}
+          onValueChange={setSelfService}
+          size={36}
+        />
         <Text style={{fontSize: 20, textAlign: 'right'}}>שירות עצמי</Text>
         <CheckBox value={maam} onValueChange={setMaam} size={36} />
         <Text style={{fontSize: 20, textAlign: 'right'}}>עם מע"מ</Text>
       </View>
-      <Pressable style={styles.btn}>
-        <Text style={{fontWeight: 'bold', color: 'white', fontSize: 24}}>
-          חשב מחיר
-        </Text>
-      </Pressable>
       <View
         style={{
           flexDirection: 'row',
@@ -85,7 +114,7 @@ const ResultModule = (props: Props) => {
               fontWeight: '500',
               padding: 8,
               textAlign: 'center',
-            }}>{`₪ ${22}`}</Text>
+            }}>{`₪ ${getDisplayCost()}`}</Text>
         </View>
         <View
           style={{
@@ -108,7 +137,7 @@ const ResultModule = (props: Props) => {
               fontWeight: '500',
               padding: 8,
               textAlign: 'center',
-            }}>{`₪ ${22}`}</Text>
+            }}>{`₪ ${(getDisplayCost() / divider).toFixed(2)}`}</Text>
         </View>
       </View>
       <Text

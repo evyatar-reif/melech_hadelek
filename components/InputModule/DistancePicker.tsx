@@ -2,10 +2,13 @@ import {StyleSheet, Text, View, Pressable} from 'react-native';
 import React, {useState} from 'react';
 import Counter from '../Counter';
 import CheckBox from '../CheckBox';
-
-type Props = {};
+import {drive} from '../../types';
+type Props = {
+  onSubmit: (d: drive) => void;
+};
 
 const DistancePicker = (props: Props) => {
+  const {onSubmit} = props;
   const [count, setCount] = useState(10);
   const [city, setCity] = useState(true);
 
@@ -16,9 +19,13 @@ const DistancePicker = (props: Props) => {
         <CheckBox value={city} onValueChange={v => setCity(v)} size={36} />
         <Text style={{fontSize: 20}}>נסיעה עירונית?</Text>
       </View>
-      <Pressable style={styles.btn}>
+      <Pressable
+        style={styles.btn}
+        onPress={() =>
+          onSubmit({distance: count, type: city ? 'city' : 'highway'})
+        }>
         <Text style={{fontWeight: 'bold', color: 'white', fontSize: 24}}>
-          אישור
+          חשב עלות
         </Text>
       </Pressable>
     </View>

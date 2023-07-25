@@ -5,13 +5,14 @@ import {
   View,
   ScrollView,
   Pressable,
+  Keyboard,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {getAutocomplete} from '../../utils/calc';
 
 type Props = {
   value: string;
-  onPress: () => void;
+  onPress: (v: string) => void;
   onValueChange: (v: string) => void;
   placeHolder: string;
 };
@@ -27,9 +28,10 @@ const AddressInput = (props: Props) => {
     elms = autocomplete.map((a, i) => (
       <Pressable
         key={`auto${i}`}
-        onPress={() => {
+        onPress={async () => {
+          await Keyboard.dismiss();
           onValueChange(a.description);
-          onPress();
+          onPress(a.description);
           setShowAutocomplete(false);
         }}>
         <Text style={styles.row}>{a.description}</Text>
