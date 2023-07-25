@@ -34,7 +34,7 @@ const Picker = (props: Props) => {
 
   return (
     <View style={styles.container}>
-      {items.year && (
+      {
         <DropDownPicker
           disabled={step != 0}
           title="שנה"
@@ -47,8 +47,8 @@ const Picker = (props: Props) => {
           }}
           items={items.year}
         />
-      )}
-      {items.make && (
+      }
+      {
         <DropDownPicker
           disabled={step != 1}
           title="יצרן"
@@ -61,8 +61,8 @@ const Picker = (props: Props) => {
           }}
           items={items.make}
         />
-      )}
-      {items.model && (
+      }
+      {
         <DropDownPicker
           disabled={step != 2}
           title="מודל"
@@ -75,7 +75,7 @@ const Picker = (props: Props) => {
           }}
           items={items.model}
         />
-      )}
+      }
     </View>
   );
 };

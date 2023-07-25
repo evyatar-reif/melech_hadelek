@@ -15,7 +15,8 @@ const CarModule = (props: Props) => {
   const {isOpen, setIsOpen} = props;
   const [isPicker, setIsPicker] = useState(false);
 
-  if (isPicker) return <CarPicker setIsPicker={() => setIsPicker(false)} />;
+  if (isPicker && isOpen)
+    return <CarPicker setIsPicker={() => setIsPicker(false)} />;
 
   if (isOpen) return <Open setToPicker={() => setIsPicker(true)} />;
 

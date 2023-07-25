@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, Pressable} from 'react-native';
 import React, {useState} from 'react';
 import FullScreenWrapper from '../../components/FullScreenWrapper';
 import {car, carInfo} from '../../types';
@@ -6,6 +6,7 @@ import Picker from './Picker';
 import Details from './Details';
 import {useDispatch} from 'react-redux';
 import {setUserCar} from '../../redux/settingsReducer';
+import BackArrow from '../../assets/BackArrow';
 
 const defaultCar: carInfo = {
   id: '',
@@ -30,7 +31,14 @@ const CarPicker = (props: Props) => {
 
   return (
     <FullScreenWrapper>
-      <Text style={{fontSize: 24, marginBottom: 20}}>בחר רכב</Text>
+      <Pressable
+        style={{
+          alignItems: 'center',
+        }}
+        onPress={setIsPicker}>
+        <BackArrow />
+        <Text style={{fontSize: 24, marginBottom: 20}}>בחר רכב</Text>
+      </Pressable>
       <Picker entry={entry} setEntry={setEntry} />
       <Details entry={entry} onSubmit={onSubmit} />
     </FullScreenWrapper>

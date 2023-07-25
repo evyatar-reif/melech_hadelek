@@ -32,7 +32,7 @@ const DropDownPicker = (props: Props) => {
     <Pressable
       style={styles.container}
       onPress={() => {
-        if (!disabled) setIsOpen(true);
+        if (!disabled && items) setIsOpen(true);
       }}>
       {!disabled && <PencilSvg />}
       <View>

@@ -32,6 +32,7 @@ const ResultModule = (props: Props) => {
     console.log(drive);
     init();
     async function init() {
+      setCost(null);
       const c = await calcCost(
         drive.distance,
         settingsState.car.economy,

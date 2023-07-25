@@ -7,8 +7,10 @@ import {
   Pressable,
   Keyboard,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {getAutocomplete} from '../../utils/calc';
+import Geolocation from 'react-native-geolocation-service';
+import {getAddressFromGeometry} from '../../utils/calc';
 
 type Props = {
   value: string;
@@ -21,23 +23,53 @@ const AddressInput = (props: Props) => {
   const {value, onValueChange, placeHolder, onPress} = props;
   const [showAutocomplete, setShowAutocomplete] = useState(false);
   const [autocomplete, setAutocomplete] = useState([]);
+  const [userAddress, setUserAdderss] = useState('');
 
-  let elms: any[] = [];
+  let elms: any[] = [
+    <Pressable
+      key={'location'}
+      onPress={async () => {
+        onValueChange(userAddress);
+        onPress(userAddress);
+        setShowAutocomplete(false);
+      }}>
+      <Text style={styles.row}>מיקום נוכחי</Text>
+    </Pressable>,
+  ];
 
   if (autocomplete[0]) {
-    elms = autocomplete.map((a, i) => (
-      <Pressable
-        key={`auto${i}`}
-        onPress={async () => {
-          await Keyboard.dismiss();
-          onValueChange(a.description);
-          onPress(a.description);
-          setShowAutocomplete(false);
-        }}>
-        <Text style={styles.row}>{a.description}</Text>
-      </Pressable>
-    ));
+    elms.push(
+      autocomplete.map((a, i) => (
+        <Pressable
+          key={`auto${i}`}
+          onPress={async () => {
+            await Keyboard.dismiss();
+            onValueChange(a.description);
+            onPress(a.description);
+            setShowAutocomplete(false);
+          }}>
+          <Text style={styles.row}>{a.description}</Text>
+        </Pressable>
+      )),
+    );
   }
+
+  useEffect(() => {
+    Geolocation.getCurrentPosition(
+      async ({coords}) => {
+        const a = await getAddressFromGeometry(
+          coords.latitude,
+          coords.longitude,
+        );
+        setUserAdderss(a);
+      },
+      error => {
+        // See error code charts below.
+        console.log(error.code, error.message);
+      },
+      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+    );
+  }, []);
 
   async function auto(v: string) {
     onValueChange(v);
