@@ -68,7 +68,7 @@ export function parseDrive(distanceInKm, duration) {
 
 export async function getPrice() {
   try {
-    const url = 'https://fuelcalc.energydmz.org/api/prices/getLatestPrice';
+    const url = 'https://migdal-api.energy-apps.org/api/FuelPrice/GetLatestPrice';
     const price = await axios(url, {
       method: 'get',
     });
